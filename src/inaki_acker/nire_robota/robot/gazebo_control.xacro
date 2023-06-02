@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <gazebo reference="aurrekoezk_gurp_link">
+    <mu1>${gurpil_marruskadura}</mu1>
+    <material>Gazebo/DarkGrey</material>
+    <mu1>0.9</mu1>
+    <mu2>0.9</mu2>
+    <minDepth>0.001</minDepth>
+    <kp>100000000</kp>
+    <kd>1</kd>
+    <implicitSpringDamper>true</implicitSpringDamper>
+  </gazebo>
+  <gazebo reference="aurrekoesk_gurp_link">
+    <mu1>${gurpil_marruskadura}</mu1>
+    <material>Gazebo/DarkGrey</material>
+    <mu1>0.9</mu1>
+    <mu2>0.9</mu2>
+    <minDepth>0.001</minDepth>
+    <kp>100000000</kp>
+    <kd>1</kd>
+    <implicitSpringDamper>true</implicitSpringDamper>
+  </gazebo>
+  <gazebo reference="atzekoezk_gurp_link">
+    <mu1>${gurpil_marruskadura}</mu1>
+    <material>Gazebo/DarkGrey</material>
+    <mu1>0.9</mu1>
+    <mu2>0.9</mu2>
+    <minDepth>0.001</minDepth>
+    <kp>100000000</kp>
+    <kd>1</kd>
+    <implicitSpringDamper>true</implicitSpringDamper>
+  </gazebo>
+  <gazebo reference="atzekoesk_gurp_link">
+    <mu1>${gurpil_marruskadura}</mu1>
+    <material>Gazebo/DarkGrey</material>
+    <mu1>0.9</mu1>
+    <mu2>0.9</mu2>
+    <minDepth>0.001</minDepth>
+    <kp>100000000</kp>
+    <kd>1</kd>
+    <implicitSpringDamper>true</implicitSpringDamper>
+  </gazebo>
+
+  <gazebo reference="base_link">
+    <dampingFactor>0.00007</dampingFactor>
+  </gazebo>
+  <gazebo>
+    <plugin name="car_gazebo_plugin" filename="libcar_gazebo_plugin.so">
+    </plugin>
+  </gazebo>
+</robot>
