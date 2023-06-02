@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <!-- RPLIDAR SENSOR -->
+
+    <link name="rplidar_link">
+		<collision>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<geometry>
+				<box size="0.1 0.1 0.1"/>
+			</geometry>
+		</collision>
+
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://summit_deskribapena/meshes/rplidar.dae"/>
+            </geometry>
+        </visual>
+
+		<!--vision>
+			<origin xyz="0 0 -0.03125" rpy="1.5707 0 0"/>
+			<geometry>
+				<box size="0.1 0.1 0.1"/>
+				<meshfile name="package://robotnik_sensors/meshes/rplidar.dae"/>
+			</geometry>			
+		</vision-->
+
+		<inertial>
+			<mass value="1e-5"/>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
+		</inertial>
+	</link>
+
+	<joint name="rplidar_joint" type="fixed">
+		<axis xyz="0 1 0"/>
+		<origin xyz="0 0 0.22" rpy="0 0 0 "/>
+		<parent link="base_link"/>
+		<child link="rplidar_link"/>
+	</joint>
+
+</robot>
