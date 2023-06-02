@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">  
+  <xacro:property name="cam_px" value="-0.087" />
+	<xacro:property name="cam_py" value="-0.0125" />
+	<xacro:property name="cam_pz" value="0.2870" />
+	<xacro:property name="cam_or" value="0" />
+	<xacro:property name="cam_op" value="0" />
+  <xacro:property name="cam_oy" value="0" />
+  <!-- KINECT SENSOR -->
+
+  <joint name="kinect_rgb_joint" type="fixed">
+      <origin xyz="0.10 0 0.2825" rpy="0 0 0"/>
+      <parent link="base_link"/>
+      <child link="camera_rgb_base_frame" />
+    </joint>
+    <link name="camera_rgb_base_frame">
+      <inertial>
+        <mass value="0.001" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.0001" ixy="0.0" ixz="0.0"
+                 iyy="0.0001" iyz="0.0"
+                 izz="0.0001" />
+      </inertial>
+    </link>
+
+
+    <joint name="kinect_rgb_optical_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="${-pi/2} 0 ${-pi/2}" />
+      <parent link="camera_rgb_base_frame" />
+      <child link="camera_rgb_optical_frame" />
+    </joint>
+    <link name="camera_rgb_optical_frame">
+      <inertial>
+        <mass value="0.001" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.0001" ixy="0.0" ixz="0.0"
+                 iyy="0.0001" iyz="0.0"
+                 izz="0.0001" />
+      </inertial>
+    </link>
+
+  <joint name="kinect_joint" type="fixed">
+    <origin xyz="-0.031 ${-cam_py} -0.016" rpy="0 0 0"/>
+    <parent link="camera_rgb_base_frame"/>
+    <child link="camera_link"/>
+  </joint>
+    <link name="camera_link">
+    <visual>
+     <origin xyz="0 0 0" rpy="0 0 ${pi/2}"/>
+      <geometry>
+       <mesh filename="package://summit_deskribapena/meshes/kinect.dae"/>
+      </geometry>
+    </visual>
+	  <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+	    <geometry>
+	      <box size="0.07271 0.27794 0.073"/>
+	    </geometry>
+	  </collision>
+    <inertial>
+      <mass value="0.001" />
+      <origin xyz="0 0 0" />
+      <inertia ixx="0.0001" ixy="0.0" ixz="0.0"
+               iyy="0.0001" iyz="0.0"
+               izz="0.0001" />
+    </inertial>
+  </link>
+
+  <!-- The fixed joints & links below are usually published by static_transformers launched by the OpenNi launch
+       files. However, for Gazebo simulation we need them, so we add them here.
+       (Hence, don't publish them additionally!) -->
+	<joint name="kinect_depth_joint" type="fixed">
+	  <origin xyz="0 ${2 * -cam_py} 0" rpy="0 0 0" />
+	  <parent link="camera_rgb_base_frame" />
+	  <child link="camera_depth_frame" />
+	</joint>
+	<link name="camera_depth_frame">
+    <inertial>
+      <mass value="0.001" />
+      <origin xyz="0 0 0" />
+      <inertia ixx="0.0001" ixy="0.0" ixz="0.0"
+               iyy="0.0001" iyz="0.0"
+               izz="0.0001" />
+    </inertial>
+	</link>
+	<joint name="kinect_depth_optical_joint" type="fixed">
+	  <origin xyz="0 0 0" rpy="${-pi/2} 0 ${-pi/2}" />
+	  <parent link="camera_depth_frame" />
+	  <child link="camera_depth_optical_frame" />
+	</joint>
+	<link name="camera_depth_optical_frame">
+    <inertial>
+      <mass value="0.001" />
+      <origin xyz="0 0 0" />
+      <inertia ixx="0.0001" ixy="0.0" ixz="0.0"
+               iyy="0.0001" iyz="0.0"
+               izz="0.0001" />
+    </inertial>
+	</link>
+</robot>
