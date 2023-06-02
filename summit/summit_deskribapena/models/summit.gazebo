@@ -1,0 +1,218 @@
+<?xml version="1.0"?>
+<robot>
+  <!-- ros_control plugin Hau ROS1-ean
+  <gazebo>
+    <plugin name="ros_control" filename="libgazebo_ros_control.so">
+       <robotNamespace>/summit</robotNamespace>
+       <controlPeriod>0.0007</controlPeriod>
+	   <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+	   <legacyModeNS>true</legacyModeNS>
+    </plugin>
+  </gazebo> -->
+  <!--Plugin berria-->
+  <gazebo>
+    <plugin name="car_gazebo_plugin" filename="libcar_gazebo_plugin.so">
+    </plugin>
+  </gazebo>
+
+  <gazebo reference="base_footprint">
+    <material>Gazebo/Green</material>
+  </gazebo>
+
+  <gazebo reference="base_link">
+    <material>Gazebo/Red</material>
+  </gazebo>
+
+  <gazebo reference="back_left_wheel_dir">
+    <material>Gazebo/Green</material>
+  </gazebo>
+
+  <gazebo reference="back_right_wheel_dir">
+    <material>Gazebo/Green</material>
+  </gazebo>
+
+  <gazebo reference="front_left_wheel_dir">
+    <material>Gazebo/Green</material>
+  </gazebo>
+
+  <gazebo reference="front_right_wheel_dir">
+    <material>Gazebo/Green</material>
+  </gazebo>
+
+  <gazebo reference="rplidar_link">
+    <material>Gazebo/Black</material>
+  </gazebo>
+
+  <!-- gazebo reference="back_left_wheel">
+    <mu1 value="4.0"/>
+    <mu2 value="1.0"/>
+    <fdir1 value="1 0 0"/>
+    <material>Gazebo/Grey</material>
+  </gazebo -->
+
+  <gazebo reference="back_left_wheel">
+    <mu1 value="50.0"/>
+    <mu2 value="50.0"/>
+    <fdir1 value="1 0 0"/>
+    <material>Gazebo/Grey</material>
+  </gazebo>
+
+  <gazebo reference="back_right_wheel">
+    <mu1 value="50.0"/>
+    <mu2 value="50.0"/>
+    <fdir1 value="1 0 0"/>
+    <material>Gazebo/Grey</material>
+  </gazebo>
+
+  <gazebo reference="front_left_wheel">
+    <mu1 value="50.0"/>
+    <mu2 value="50.0"/>
+    <fdir1 value="1 0 0"/>
+    <material>Gazebo/Grey</material>
+  </gazebo>
+
+  <gazebo reference="front_right_wheel">
+    <mu1 value="50.0"/>
+    <mu2 value="50.0"/>
+    <fdir1 value="1 0 0"/>
+    <material>Gazebo/Grey</material>
+  </gazebo>
+
+  <!-- camera -->
+  <!-- gazebo reference="camera_link" -->
+  <gazebo reference="camera_tilt_link">
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <material>Gazebo/Red</material>
+
+    <sensor type="camera" name="camera1">
+      <update_rate>30.0</update_rate>
+      <camera name="head">
+        <horizontal_fov>1.3962634</horizontal_fov>
+        <image>
+          <width>800</width>
+          <height>800</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.02</near>
+          <far>300</far>
+        </clip>
+        <noise>
+          <type>gaussian</type>
+          <!-- Noise is sampled independently per pixel on each frame.
+               That pixel's noise value is added to each of its color
+               channels, which at that point lie in the range [0,1]. -->
+          <mean>0.0</mean>
+          <stddev>0.007</stddev>
+        </noise>
+      </camera>
+      <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>0.0</updateRate>
+        <cameraName>/summit/camera1</cameraName>
+        <imageTopicName>image_raw</imageTopicName>
+        <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+        <frameName>camera_tilt_link</frameName>
+        <hackBaseline>0.07</hackBaseline>
+        <distortionK1>0.0</distortionK1>
+        <distortionK2>0.0</distortionK2>
+        <distortionK3>0.0</distortionK3>
+        <distortionT1>0.0</distortionT1>
+        <distortionT2>0.0</distortionT2>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <!-- kinect -->
+<!--
+  <gazebo reference="camera_link">
+      <sensor type="depth" name="kinect_sensor">
+        <always_on>true</always_on>
+        <update_rate>20.0</update_rate>
+        <camera>
+          <horizontal_fov>${60.0*pi/180.0}</horizontal_fov>
+          <image>
+            <format>R8G8B8</format>
+            <width>640</width>
+            <height>480</height>
+          </image>
+          <clip>
+            <near>0.05</near>
+            <far>8.0</far>
+          </clip>
+        </camera>
+        <plugin name="kinect_controller" filename="libgazebo_ros_openni_kinect.so">
+          <topicName>kinect_data</topicName>
+          <cameraName>kinect</cameraName>
+          <alwaysOn>true</alwaysOn>
+          <updateRate>10</updateRate>
+          <imageTopicName>rgb/image_raw</imageTopicName>
+          <depthImageTopicName>depth/image_raw</depthImageTopicName>
+          <pointCloudTopicName>depth/points</pointCloudTopicName>
+          <cameraInfoTopicName>rgb/camera_info</cameraInfoTopicName>
+          <depthImageCameraInfoTopicName>depth/camera_info</depthImageCameraInfoTopicName>
+          <frameName>/camera_depth_optical_frame</frameName>
+          <baseline>0.1</baseline>
+          <distortion_k1>0.0</distortion_k1>
+          <distortion_k2>0.0</distortion_k2>
+          <distortion_k3>0.0</distortion_k3>
+          <distortion_t1>0.0</distortion_t1>
+          <distortion_t2>0.0</distortion_t2>
+          <pointCloudCutoff>0.4</pointCloudCutoff>
+          <pointCloudCutoffMax>5.0</pointCloudCutoffMax>
+        </plugin>
+      </sensor>
+  </gazebo>
+-->
+  <!-- rplidar -->
+<!--
+  <gazebo reference="rplidar_link">
+	<sensor type="ray" name="lidar">
+        <always_on>true</always_on>
+		<pose>0 0 0 0 0 0</pose>
+		<visualize>false</visualize>
+		<update_rate>10</update_rate>
+		<ray>
+			<scan>
+				<horizontal>
+					<samples>400</samples>
+					<resolution>1</resolution>
+					<min_angle>-3.14159</min_angle>
+					<max_angle>3.14159</max_angle>
+				</horizontal>
+			</scan>
+			<range>
+				<min>0.15</min>
+				<max>6.0</max>
+				<resolution>0.01</resolution>
+			</range>
+			<noise>
+				<type>gaussian</type>
+				<mean>0.0</mean>
+				<stddev>0.01</stddev>
+			</noise>
+		</ray>
+		<plugin name="scan" filename="libgazebo_ros_ray_sensor.so">
+            <ros>
+                <remapping>~/out:=scan</remapping>
+            </ros>
+            <output_type>sensor_msgs/LaserScan</output_type>
+			<frameName>rplidar_link</frameName>
+		</plugin>
+	</sensor>
+  </gazebo>
+-->
+  <!-- IMU -->
+
+  <gazebo>
+    <plugin name="ros_imu" filename="libgazebo_ros_imu.so">
+       <robotNamespace>/summit</robotNamespace>
+       <topicName>imu_data</topicName>
+		<bodyName>imu_link</bodyName>
+		<serviceName>/imu_service</serviceName>
+        <gaussianNoise>0.005</gaussianNoise>
+    </plugin>
+  </gazebo>
+
+</robot>
