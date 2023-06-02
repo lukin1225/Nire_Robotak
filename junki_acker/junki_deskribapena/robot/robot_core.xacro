@@ -1,0 +1,197 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Robotaren balio konstanteak -->
+  <xacro:property name="oinarri_zabalera" value="0.31"/>
+  <xacro:property name="oinarri_luzera" value="0.42"/>
+  <xacro:property name="oinarri_altuera" value="0.18"/>
+
+  <xacro:property name="gurpil_erradioa" value="0.10"/>
+  <xacro:property name="gurpil_zabalera" value="0.04"/>
+  <xacro:property name="wheel_ygap" value="0.025"/>
+  <xacro:property name="wheel_zoff" value="0.05"/>
+  <xacro:property name="wheel_xoff" value="0.12"/>
+
+  <xacro:property name="gurpil_marruskadura" value="0.8"/>
+
+  <!-- Definitu propietate inertzialak  -->
+  <xacro:macro name="kutxa_inerzia" params="m w h d">
+    <inertial>
+      <origin xyz="0 0 0" rpy="${pi/2} 0 ${pi/2}"/>
+      <mass value="${m}"/>
+      <inertia ixx="${(m/12) * (h*h + d*d)}" ixy="0.0" ixz="0.0" iyy="${(m/12) * (w*w + d*d)}" iyz="0.0" izz="${(m/12) * (w*w + h*h)}"/>
+    </inertial>
+  </xacro:macro>
+
+  <xacro:macro name="zilindro_inertzia" params="m r h">
+    <inertial>
+      <origin xyz="0 0 0" rpy="${pi/2} 0 0" />
+      <mass value="${m}"/>
+      <inertia ixx="${(m/12) * (3*r*r + h*h)}" ixy = "0" ixz = "0" iyy="${(m/12) * (3*r*r + h*h)}" iyz = "0" izz="${(m/2) * (r*r)}"/>
+    </inertial>
+  </xacro:macro>
+
+  <!-- Robotaren basea -->
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <box size="${oinarri_luzera} ${oinarri_zabalera} ${oinarri_altuera}"/>
+      </geometry>
+      <material name="Cyan">
+        <color rgba="0 1.0 1.0 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="${oinarri_luzera} ${oinarri_zabalera} ${oinarri_altuera}"/>
+      </geometry>
+    </collision>
+
+    <xacro:kutxa_inerzia m="15" w="${oinarri_zabalera}" d="${oinarri_luzera}" h="${oinarri_altuera}"/>
+  </link>
+
+  <!-- Robotaren Footprinta (itzala) -->
+  <link name="base_footprint"/>
+
+  <joint name="base_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+    <origin xyz="0.0 0.0 ${(gurpil_erradioa+wheel_zoff)}" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Atzeko gurpilak -->
+  <!-- Ez dira ackermanak -->
+  <xacro:macro name="Atzeko_gurpilak" params="aurrizkia x_norantza y_norantza">
+    <link name="${aurrizkia}_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
+        <geometry>
+            <cylinder radius="${gurpil_erradioa}" length="${gurpil_zabalera}"/>
+        </geometry>
+        <material name="txuria">
+          <color rgba="1 1 1 1"/>
+        </material>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
+        <geometry>
+          <cylinder radius="${gurpil_erradioa}" length="${gurpil_zabalera}"/>
+        </geometry>
+      </collision>
+
+      <xacro:zilindro_inertzia m="0.5" r="${gurpil_erradioa}" h="${gurpil_zabalera}"/>
+    </link>
+    <joint name="${aurrizkia}_joint" type="continuous">
+      <parent link="base_link"/>
+      <child link="${aurrizkia}_link"/>
+      <origin xyz="${x_norantza*wheel_xoff} ${y_norantza*(oinarri_zabalera/2+wheel_ygap)} ${-wheel_zoff}" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+    </joint>
+  </xacro:macro>
+
+  <xacro:Atzeko_gurpilak aurrizkia="atzekoezk_gurp" x_norantza="-1" y_norantza="1" />
+  <xacro:Atzeko_gurpilak aurrizkia="atzekoesk_gurp" x_norantza="-1" y_norantza="-1" />
+
+  <!-- Aurreko gurpilak -->
+  <!-- Ackermann-ak-->
+  <xacro:macro name="Aurreko_gurpila" params="aurrizkia2 x_norantza2 y_norantza2">
+    <link name="${aurrizkia2}_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
+        <geometry>
+            <cylinder radius="${gurpil_erradioa}" length="${gurpil_zabalera}"/>
+        </geometry>
+        <material name="txuria">
+          <color rgba="1 1 1 1"/>
+        </material>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
+        <geometry>
+          <cylinder radius="${gurpil_erradioa}" length="${gurpil_zabalera}"/>
+        </geometry>
+      </collision>
+
+      <xacro:zilindro_inertzia m="0.5" r="${gurpil_erradioa}" h="${gurpil_zabalera}"/>
+    </link>
+
+  </xacro:macro>
+
+  <xacro:Aurreko_gurpila aurrizkia2="aurrekoezk_gurp" x_norantza2="1" y_norantza2="1" />
+  <xacro:Aurreko_gurpila aurrizkia2="aurrekoesk_gurp" x_norantza2="1" y_norantza2="-1" />
+
+  <joint name="aurrekoezk_gurp_joint" type="continuous">
+    <parent link="aurrekoezk_gurp_steer"/>
+    <child link="aurrekoezk_gurp_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+  <joint name="aurrekoesk_gurp_joint" type="continuous">
+    <parent link="aurrekoesk_gurp_steer"/>
+    <child link="aurrekoesk_gurp_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+
+  <link name="aurrekoezk_gurp_steer">
+    <visual>
+      <geometry>
+        <cylinder length="0.01" radius="0.01"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0 0 0 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.01" radius="0.01"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.1"/>
+      <inertia ixx="5.1458e-5" iyy="5.1458e-5" izz="6.125e-5"
+               ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <link name="aurrekoesk_gurp_steer">
+    <visual>
+      <geometry>
+        <cylinder length="0.01" radius="0.01"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0 0 0 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.01" radius="0.01"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.1"/>
+      <inertia ixx="5.1458e-5" iyy="5.1458e-5" izz="6.125e-5"
+               ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>  
+
+  <joint name="aurrekoezk_gurp_steer_joint" type="revolute">
+    <limit lower="-1" upper="1" effort="1" velocity="5"/>
+    <axis xyz="0 0 1"/>
+    <parent link="base_link"/>
+    <child link="aurrekoezk_gurp_steer"/>
+    <origin xyz="${wheel_xoff} ${(oinarri_zabalera/2+wheel_ygap)} ${-wheel_zoff}" rpy="0 0 0"/>
+  </joint>
+
+  <joint name="aurrekoesk_gurp_steer_joint" type="revolute">
+    <limit lower="-1" upper="1" effort="1" velocity="5"/>
+    <axis xyz="0 0 1"/>
+    <parent link="base_link"/>
+    <child link="aurrekoesk_gurp_steer"/>
+    <origin xyz="${wheel_xoff} ${-1*(oinarri_zabalera/2+wheel_ygap)} ${-wheel_zoff}" rpy="0 0 0"/>
+  </joint>
+
+</robot>
+
